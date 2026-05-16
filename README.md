@@ -6,26 +6,26 @@ Kumpulan microservice Go untuk mata kuliah Topik Khusus Semester 6. Setiap servi
 
 ```
 s6.topik-khusus/
-├── k8s/                        # Kubernetes manifests semua service
-│   └── track-method/
-├── track-method/               # Pertemuan 3
-├── message-queue/              # Pertemuan 4
-├── nosql-mongodb/              # Pertemuan 5
-├── langstats-indonesia/        # Pertemuan 6
-├── elasticsearch-guide/        # Pertemuan 7
-└── northwind-go/               # Pertemuan 8
+├── k8s/                            # Kubernetes manifests semua service
+│   └── ms1.track-method/
+├── ms1.track-method/               # Pertemuan 3 — Redis
+├── ms2.message-queue/              # Pertemuan 4 — Message Queue
+├── ms3.nosql-mongodb/              # Pertemuan 5 — NoSQL MongoDB
+├── ms4.langstats-indonesia/        # Pertemuan 6 — LangStats Indonesia
+├── ms5.elasticsearch-guide/        # Pertemuan 7 — Elasticsearch Guide
+└── ms6.northwind-go/               # Pertemuan 8 — Northwind Go
 ```
 
 ## Daftar Service
 
-| Pertemuan | Folder | Topik | Status |
-|-----------|--------|-------|--------|
-| 3 | [`track-method/`](./track-method) | Redis — Event Tracking dengan INCR | ✅ Selesai |
-| 4 | [`message-queue/`](./message-queue) | Message Queue | 🔧 Belum |
-| 5 | [`nosql-mongodb/`](./nosql-mongodb) | NoSQL MongoDB | 🔧 Belum |
-| 6 | [`langstats-indonesia/`](./langstats-indonesia) | LangStats Indonesia | 🔧 Belum |
-| 7 | [`elasticsearch-guide/`](./elasticsearch-guide) | Elasticsearch Guide | 🔧 Belum |
-| 8 | [`northwind-go/`](./northwind-go) | Northwind Go — Clean Architecture API | 🔧 Belum |
+| # | Folder | Pertemuan | Topik | Status |
+|---|--------|-----------|-------|--------|
+| ms1 | [`ms1.track-method/`](./ms1.track-method) | 3 | Redis — Event Tracking dengan INCR | ✅ Selesai |
+| ms2 | [`ms2.message-queue/`](./ms2.message-queue) | 4 | Message Queue | 🔧 Belum |
+| ms3 | [`ms3.nosql-mongodb/`](./ms3.nosql-mongodb) | 5 | NoSQL MongoDB | 🔧 Belum |
+| ms4 | [`ms4.langstats-indonesia/`](./ms4.langstats-indonesia) | 6 | LangStats Indonesia | 🔧 Belum |
+| ms5 | [`ms5.elasticsearch-guide/`](./ms5.elasticsearch-guide) | 7 | Elasticsearch Guide | 🔧 Belum |
+| ms6 | [`ms6.northwind-go/`](./ms6.northwind-go) | 8 | Northwind Go — Clean Architecture API | 🔧 Belum |
 
 ## Stack Teknologi
 
@@ -39,5 +39,5 @@ s6.topik-khusus/
 
 ```bash
 # Apply semua manifest sesuai service yang ingin di-deploy
-kubectl apply -f k8s/<nama-service>/
+kubectl apply -f k8s/ms1.track-method/
 ```
