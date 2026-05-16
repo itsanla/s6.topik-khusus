@@ -1,0 +1,65 @@
+name: Build & Push mq-s6
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "ms2.message-queue/v*.*.*"
+    paths:
+      - "ms2.message-queue/**"
+      - ".github/workflows/mq-s6-docker.yml"
+
+jobs:
+  build-and-push:
+    name: Build & Push Docker Image
+    runs-on: ubuntu-latest
+    environment: DOCKER
+
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v4
+
+      - name: Generate versi otomatis
+        id: version
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+
+          if [[ "${{ github.ref }}" == refs/tags/ms2.message-queue/v* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/ms2.message-queue/v}
+            MAJOR=$(echo $VERSION | cut -d. -f1)
+            MINOR=$(echo $VERSION | cut -d. -f2)
+            echo "tags=itsanla/mq-s6:latest,itsanla/mq-s6:$VERSION,itsanla/mq-s6:$MAJOR.$MINOR,itsanla/mq-s6:$MAJOR" >> $GITHUB_OUTPUT
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "tags=itsanla/mq-s6:latest,itsanla/mq-s6:sha-$SHORT_SHA" >> $GITHUB_OUTPUT
+            echo "version=sha-$SHORT_SHA" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Login ke Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build dan Push image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./ms2.message-queue
+          file: ./ms2.message-queue/Dockerfile
+          push: true
+          tags: ${{ steps.version.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Ringkasan hasil build
+        run: |
+          echo "### Docker Image Berhasil Di-push" >> $GITHUB_STEP_SUMMARY
+          echo "**Service:** mq-s6 (ms2.message-queue)" >> $GITHUB_STEP_SUMMARY
+          echo "**Versi:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.version.outputs.tags }}" | tr ',' '\n' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

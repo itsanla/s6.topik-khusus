@@ -1,0 +1,20 @@
+{
+  "name": "mq-s6",
+  "version": "1.0.0",
+  "description": "Microservice Message Queue dengan RabbitMQ - Topik Khusus S6",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

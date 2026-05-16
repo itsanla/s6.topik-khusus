@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mq-s6-config
+  namespace: message-queue
+data:
+  PORT: "8081"
+  APP_ENV: "production"
+  RABBITMQ_URL: "amqp://guest:guest@rabbitmq-service:5672"
