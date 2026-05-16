@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mq-s6-consumer
+  namespace: message-queue
+  labels:
+    app: mq-s6-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mq-s6-consumer
+  template:
+    metadata:
+      labels:
+        app: mq-s6-consumer
+    spec:
+      containers:
+        - name: mq-s6
+          image: itsanla/mq-s6:latest
+          imagePullPolicy: Always
+          env:
+            - name: APP_MODE
+              value: "consumer"
+          envFrom:
+            - configMapRef:
+                name: mq-s6-config
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "150m"
+      terminationGracePeriodSeconds: 30
