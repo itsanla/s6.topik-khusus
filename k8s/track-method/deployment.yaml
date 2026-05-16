@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: track-method
-          image: track-method:latest
+          image: itsanla/track-method:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
