@@ -7,7 +7,7 @@ on:
     tags:
       - "track-method/v*.*.*"
     paths:
-      - "track-method/**"
+      - "ms1.track-method/**"
       - ".github/workflows/track-method-docker.yml"
 
 jobs:
@@ -50,8 +50,8 @@ jobs:
       - name: Build dan Push image
         uses: docker/build-push-action@v5
         with:
-          context: ./track-method
-          file: ./track-method/Dockerfile
+          context: ./ms1.track-method
+          file: ./ms1.track-method/Dockerfile
           push: true
           tags: ${{ steps.version.outputs.tags }}
           cache-from: type=gha
