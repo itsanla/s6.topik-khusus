@@ -2,41 +2,66 @@ name: Build & Push elasticsearch-s6
 
 on:
   push:
-    branches: [main]
-    tags: ["ms5.elasticsearch-guide/v*.*.*"]
+    branches:
+      - main
+    tags:
+      - "ms5.elasticsearch-guide/v*.*.*"
     paths:
       - "ms5.elasticsearch-guide/**"
       - ".github/workflows/elasticsearch-s6-docker.yml"
 
 jobs:
   build-and-push:
+    name: Build & Push Docker Image
     runs-on: ubuntu-latest
     environment: DOCKER
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout kode
+        uses: actions/checkout@v4
 
       - name: Generate versi otomatis
         id: version
         run: |
           SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+
           if [[ "${{ github.ref }}" == refs/tags/ms5.elasticsearch-guide/v* ]]; then
             VERSION=${GITHUB_REF#refs/tags/ms5.elasticsearch-guide/v}
-            echo "tags=itsanla/elasticsearch-s6:latest,itsanla/elasticsearch-s6:$VERSION" >> $GITHUB_OUTPUT
+            MAJOR=$(echo $VERSION | cut -d. -f1)
+            MINOR=$(echo $VERSION | cut -d. -f2)
+            echo "tags=itsanla/elasticsearch-s6:latest,itsanla/elasticsearch-s6:$VERSION,itsanla/elasticsearch-s6:$MAJOR.$MINOR,itsanla/elasticsearch-s6:$MAJOR" >> $GITHUB_OUTPUT
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
           else
             echo "tags=itsanla/elasticsearch-s6:latest,itsanla/elasticsearch-s6:sha-$SHORT_SHA" >> $GITHUB_OUTPUT
+            echo "version=sha-$SHORT_SHA" >> $GITHUB_OUTPUT
           fi
 
-      - uses: docker/login-action@v3
+      - name: Login ke Docker Hub
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - uses: docker/build-push-action@v5
+      - name: Build dan Push image
+        uses: docker/build-push-action@v5
         with:
           context: ./ms5.elasticsearch-guide
+          file: ./ms5.elasticsearch-guide/Dockerfile
           push: true
           tags: ${{ steps.version.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Ringkasan hasil build
+        run: |
+          echo "### Docker Image Berhasil Di-push" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Service:** elasticsearch-s6 (ms5.elasticsearch-guide)" >> $GITHUB_STEP_SUMMARY
+          echo "**Versi:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Tags yang di-push:**" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.version.outputs.tags }}" | tr ',' '\n' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
