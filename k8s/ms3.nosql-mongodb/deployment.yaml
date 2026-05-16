@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nosql-mongodb
+  namespace: nosql-mongodb
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nosql-mongodb
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: nosql-mongodb
+    spec:
+      containers:
+        - name: nosql-mongodb
+          image: itsanla/nosql-s6:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9090
+          envFrom:
+            - configMapRef:
+                name: nosql-mongodb-config
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 9090
+            initialDelaySeconds: 15
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 9090
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nosql-mongodb-service
+  namespace: nosql-mongodb
+spec:
+  selector:
+    app: nosql-mongodb
+  ports:
+    - port: 80
+      targetPort: 9090
+  type: ClusterIP
