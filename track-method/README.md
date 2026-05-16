@@ -95,16 +95,18 @@ docker run -p 8080:8080 \
 
 ## Deploy ke Kubernetes
 
+> Manifest Kubernetes berada di root project: `k8s/track-method/`
+
 ```bash
-# Apply semua manifest secara berurutan
-kubectl apply -f k8s/namespace.yaml
-kubectl apply -f k8s/configmap.yaml
-kubectl apply -f k8s/secret.yaml
-kubectl apply -f k8s/redis-deployment.yaml
-kubectl apply -f k8s/deployment.yaml
-kubectl apply -f k8s/service.yaml
-kubectl apply -f k8s/ingress.yaml
-kubectl apply -f k8s/hpa.yaml
+# Apply semua manifest secara berurutan (dari root project)
+kubectl apply -f k8s/track-method/namespace.yaml
+kubectl apply -f k8s/track-method/configmap.yaml
+kubectl apply -f k8s/track-method/secret.yaml
+kubectl apply -f k8s/track-method/redis-deployment.yaml
+kubectl apply -f k8s/track-method/deployment.yaml
+kubectl apply -f k8s/track-method/service.yaml
+kubectl apply -f k8s/track-method/ingress.yaml
+kubectl apply -f k8s/track-method/hpa.yaml
 
 # Cek status pod
 kubectl get pods -n track-method
