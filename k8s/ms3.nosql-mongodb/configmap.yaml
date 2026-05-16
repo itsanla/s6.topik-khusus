@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nosql-mongodb-config
+  namespace: nosql-mongodb
+data:
+  PORT: "9090"
+  MONGO_URI: "mongodb://mongodb-service:27017"
+  MYSQL_HOST: "mysql-service"
+  MYSQL_PORT: "3306"
+  MYSQL_DB: "db_store"
+  MYSQL_USER: "root"
