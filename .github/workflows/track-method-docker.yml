@@ -14,7 +14,8 @@ jobs:
   build-and-push:
     name: Build & Push Docker Image
     runs-on: ubuntu-latest
-
+    environment: DOCKER
+    
     steps:
       - name: Checkout kode
         uses: actions/checkout@v4
